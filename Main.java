@@ -21,7 +21,7 @@ public class Main {
   static void bmp2data() throws IOException {
     // O stream basicamente procura por todos os arquivos que contem .java na pasta destino
     try (Stream<Path> paths = Files.walk(Paths.get("."))) {
-      paths.filter(Files::isRegularFile).filter(x -> x.getFileName().toString().contains(".bmp")).forEach(x -> {   
+      paths.filter(Files::isRegularFile).filter(x -> x.getFileName().toString().contains(".png")?true:x.getFileName().toString().contains(".bmp")?true:false).forEach(x -> {   
         try {
           var text = new File(x.getFileName().toString().substring(0, x.getFileName().toString().length()-4) + ".data");      // Cria o .data 
           FileWriter myWriter = new FileWriter(text);
@@ -30,11 +30,17 @@ public class Main {
           int height = img.getHeight();
           int width = img.getWidth();
 
+          int Xextension = width%4==0?0:4-width%4;
+          int Yextension = height%4==0?0:4-height%4;
+
+          height = height%4==0?height:height+4-height%4;
+          width = width%4==0?width:width+4-width%4;
+
           myWriter.write(x.getFileName().toString().substring(0, x.getFileName().toString().length()-4) +": .word " + width + ", " + height + "\n.byte ");
 
           for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++) {
-              int rgb = img.getRGB(w, h);
+              int rgb = h<height-Yextension?w<width-Xextension?img.getRGB(w, h):0:0;
               // regrinha de 3?
               // 255/7 = 37, arredondei para 37
               // entao n*17 eh o valor "normalizado" em 3 bits?
@@ -54,7 +60,7 @@ public class Main {
               // ordem => red 7:5 green 4:2 blue 1:0
               //int resultado = blue + (green<<2) + (red<<4);
               
-              int resultado = (blue<<6) + (green<<3) + red;
+              int resultado = h<height-Yextension?w<width-Xextension?(blue<<6) + (green<<3) + red:158:158;
               myWriter.append("" +resultado + ", ");
             }
             myWriter.append("\n");
