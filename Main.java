@@ -21,7 +21,8 @@ public class Main {
   static void bmp2data() throws IOException {
     // O stream basicamente procura por todos os arquivos que contem .java na pasta destino
     try (Stream<Path> paths = Files.walk(Paths.get("."))) {
-      paths.filter(Files::isRegularFile).filter(x -> x.getFileName().toString().contains(".png")?true:x.getFileName().toString().contains(".bmp")?true:false).forEach(x -> {   
+      // chessus olha o tamanho dessa bagaça mas é a vida
+      paths.filter(Files::isRegularFile).filter(x -> x.getFileName().toString().contains(".png")?true:x.getFileName().toString().contains(".bmp")?true:x.getFileName().toString().contains(".jpeg")?true:false).forEach(x -> {   
         try {
           var text = new File(x.getFileName().toString().substring(0, x.getFileName().toString().length()-4) + ".data");      // Cria o .data 
           FileWriter myWriter = new FileWriter(text);
@@ -60,7 +61,7 @@ public class Main {
               // ordem => red 7:5 green 4:2 blue 1:0
               //int resultado = blue + (green<<2) + (red<<4);
               
-              int resultado = h<height-Yextension?w<width-Xextension?(blue<<6) + (green<<3) + red:158:158;
+              int resultado = h<height-Yextension?w<width-Xextension?(blue<<6) + (green<<3) + red:199:199;
               myWriter.append("" +resultado + ", ");
             }
             myWriter.append("\n");
